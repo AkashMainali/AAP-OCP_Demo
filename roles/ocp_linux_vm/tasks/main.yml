@@ -1,0 +1,28 @@
+---
+# tasks file for create_linux_vm
+- name: Select RHEL-7 template
+  set_fact:
+      linux_template: "rhel7_template"
+  when: vm_template == "RHEL7"
+
+- name: Select RHEL-8 template
+  set_fact:
+      linux_template: "rhel8_template"
+  when: vm_template == "RHEL8"
+
+- name: Provision RHEL machine
+  include_task: Provision master node
+
+- name: debug ip address of vm created
+  set_fact:
+    linux_vm_ip: "{{ rhel_vm.instance.hw_eth0.ipaddresses[0] }}"  #Rhel_vm.instance.ipv4
+
+- name: Displaying success message
+  debug:
+    msg: "The VM Has been provisioned successfully"
+
+- name: Set stats for workflow template
+  set_stats:
+    data:
+      linux_ip_address: "{{ linux_vm_ip }}"
+      linux_hostname: "{{ vm_name }}.iisl.lab"

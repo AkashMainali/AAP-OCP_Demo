@@ -1,0 +1,26 @@
+---
+- name: Provision RHEL machine
+  vmware_guest:
+    folder: "Openshift"
+    template: "{{ linux_template }}"
+    validate_certs: no
+    name: "{{ vm_name }}"
+    state: poweredon
+    cluster: "Openshift"
+    datastore: "RHCOS_Primera_Vol01"
+    datacenter: "Plainview"
+    networks:
+     - name: "RHEL-Automation - vLAN 102"
+       type: dhcp
+       domain: "iisl.lab"
+       dns_servers:
+         - 192.168.2.201
+    customization:
+       hostname: '{{ vm_name }}.iisl.lab'
+       dns_servers:
+         - 192.168.2.201
+       domain: "iisl.lab"
+       state: started
+    wait_for_ip_address: yes
+    wait_for_customization: yes
+  register: rhel_vm
